@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class Payment {
-  final String amount;
+  final double amount;
   final String date;
   final String description;
   Payment({
@@ -12,9 +12,10 @@ class Payment {
   });
 
 
+  
 
   Payment copyWith({
-    String? amount,
+    double? amount,
     String? date,
     String? description,
   }) {
@@ -35,7 +36,7 @@ class Payment {
 
   factory Payment.fromMap(Map<String, dynamic> map) {
     return Payment(
-      amount: map['amount'] as String,
+      amount: map['amount'] as double,
       date: map['date'] as String,
       description: map['description'] as String,
     );

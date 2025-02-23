@@ -2,11 +2,11 @@ import 'package:detant/controller/payment_controller.dart';
 import 'package:detant/model/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AddPaymentDialog extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
-  final _dateController = TextEditingController();
   final _descriptionController = TextEditingController();
 
   AddPaymentDialog({super.key});
@@ -32,26 +32,13 @@ class AddPaymentDialog extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: _amountController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: 'المبلغ'),
-                  validator: (value) => value!.isEmpty ? 'مطلوب' : null,
-                ),
-                TextFormField(
-                  controller: _dateController,
-                  decoration: const InputDecoration(labelText: 'التاريخ'),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-                    if (date != null) {
-                      _dateController.text = 
-                        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-                    }
+                   validator: (value) {
+                    if (value == null || value.isEmpty) return 'مطلوب';
+                    if (double.tryParse(value) == null) return 'قيمة غير صالحة';
+                    return null;
                   },
-                  validator: (value) => value!.isEmpty ? 'مطلوب' : null,
                 ),
                 TextFormField(
                   controller: _descriptionController,
@@ -62,11 +49,11 @@ class AddPaymentDialog extends StatelessWidget {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       final payment = Payment(
-                        amount: '${_amountController.text} جنيه',
-                        date: _dateController.text,
+                        amount:  double.parse(_amountController.text),
+                        date: DateFormat('hh:mm a dd-MM-yyyy').format(DateTime.now()),
                         description: _descriptionController.text,
                       );
-                      Get.find<PaymentController>().addPayment(payment, isSupplier);
+                      Get.find<HomeController>().addPayment(payment, isSupplier);
                       Get.back();
                     }
                   },
