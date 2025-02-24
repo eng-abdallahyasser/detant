@@ -5,6 +5,9 @@ class HomeController extends GetxController {
   var supplierPayments = <Payment>[].obs;
   var customerPayments = <Payment>[].obs;
   var totalAmount = 0.0.obs;
+  var totalInAmount = 0.0.obs;
+  var totalOutAmount = 0.0.obs;
+  var isSupplier=true.obs;
 
   @override
   void onInit() {
@@ -18,21 +21,30 @@ class HomeController extends GetxController {
       Payment(amount: 2000, date: '٢٠٢٣-١٠-٠٢', description: 'دفعة منتج أ'),
       Payment(amount: 1500, date: '٢٠٢٣-١٠-٠٣', description: 'دفعة منتج ب'),
     ]);
-    //add code here
+    updateTotal();
   }
 
   void addPayment(Payment payment, bool isSupplier) {
     if (isSupplier) {
       totalAmount.value += payment.amount;
+      totalInAmount.value+= payment.amount;
       supplierPayments.add(payment);
+
     } else {
       totalAmount.value -= payment.amount;
+      totalOutAmount.value+= payment.amount;
       customerPayments.add(payment);
     }
   }
-  void updateTotal() {
-  totalAmount.value = customerPayments.fold(0.0, (sum, p) => sum + p.amount) -
-                     supplierPayments.fold(0.0, (sum, p) => sum + p.amount);
-}
 
+  void updateTotal() {
+    totalAmount.value = customerPayments.fold(0.0, (sum, p) => sum + p.amount) -
+        supplierPayments.fold(0.0, (sum, p) => sum + p.amount);
+
+    totalInAmount.value =
+        supplierPayments.fold(0.0, (sum, p) => sum + p.amount);
+
+    totalOutAmount.value =
+        customerPayments.fold(0.0, (sum, p) => sum + p.amount);
+  }
 }

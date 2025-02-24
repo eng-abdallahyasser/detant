@@ -27,18 +27,18 @@ class Home extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              const FinanceDashboard(),
+               FinanceDashboard(),
               PaymentsList(
                 payments: _controller.customerPayments,
               ),
               PaymentsList(
-                payments: _controller.customerPayments,
+                payments: _controller.supplierPayments,
               ),
             ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Get.to(() => AddPaymentDialog(), arguments: true);
+              Get.to(() => AddPaymentDialog());
             },
             child: const Icon(Icons.add),
           ),
